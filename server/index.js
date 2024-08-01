@@ -94,6 +94,33 @@ async function run() {
       const room = await roomCollection.findOne({ _id: new ObjectId(id) });
       res.send(room);
     });
+
+    // Create Room
+    app.post("/room", async (req, res) => {
+      const formData = req.body;
+      const data = await roomCollection.insertOne(formData);
+      res.send(data);
+    });
+
+    // Get All My Listing
+    app.get("/my-listing/:email", async (req, res) => {
+      const email = req.params.email;
+      let query = {
+        "host.email": email,
+      };
+      const rooms = await roomCollection.find(query).toArray();
+
+      res.send(rooms);
+    });
+
+    // Handle Delete Room
+    app.delete("/room/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const data = await roomCollection.deleteOne(query);
+      res.send(data);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(

@@ -1,10 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { toastAlert } from "../../helper/helper";
 import useAuth from "../../hooks/useAuth";
 import { ImSpinner9 } from "react-icons/im";
 const Login = () => {
   const { loading, setLoading, signInWithGoogle, signIn } = useAuth();
+  const location = useLocation();
+  const from = location.state || "/";
   const navigate = useNavigate();
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -20,7 +22,7 @@ const Login = () => {
       const resData = await signIn(email, password);
       if (resData?.user) {
         toastAlert("User Login Successful", "success");
-        navigate("/");
+        navigate(from);
       }
     } catch (error) {
       toastAlert(error.message, "error");
@@ -34,7 +36,7 @@ const Login = () => {
       setLoading(true);
       await signInWithGoogle();
       toastAlert("User SignUp Successful", "success");
-      navigate("/");
+      navigate(from);
     } catch (error) {
       toastAlert(error.message, "error");
       console.log(error.message);
@@ -102,9 +104,12 @@ const Login = () => {
           </div>
         </form>
         <div className="space-y-1">
-          <button className="text-xs hover:underline hover:text-rose-500 text-gray-400">
+          <Link
+            to="/reset"
+            className="text-xs hover:underline hover:text-rose-500 text-gray-400"
+          >
             Forgot password?
-          </button>
+          </Link>
         </div>
         <div className="flex items-center pt-4 space-x-1">
           <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
